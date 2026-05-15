@@ -11,6 +11,9 @@ __pycache__/
 # Config del usuario (se genera automáticamente)
 *.log
 
+# Claude Code
+.claude/
+
 # IDE
 .vscode/
 .idea/
