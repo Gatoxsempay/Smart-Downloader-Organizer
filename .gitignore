@@ -1,0 +1,16 @@
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Config del usuario (se genera automáticamente)
+*.log
+
+# IDE
+.vscode/
+.idea/

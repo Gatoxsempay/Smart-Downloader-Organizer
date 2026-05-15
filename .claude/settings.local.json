@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(python -c \"import watchdog; print\\('watchdog', watchdog.__version__\\)\" 2>&1)",
+      "PowerShell(py -c \"import watchdog; print\\('watchdog', watchdog.__version__\\)\" 2>&1)",
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\\\\Python\" -ErrorAction SilentlyContinue | Select-Object Name, FullName)",
+      "PowerShell(& \"C:\\\\Users\\\\Sal�n 19\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\python.exe\" --version 2>&1)",
+      "PowerShell(& \"C:\\\\Users\\\\Sal�n 19\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\python.exe\" -c \"import watchdog\" 2>&1)",
+      "PowerShell($proc = Start-Process -FilePath \"C:\\\\Users\\\\Salón 19\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\python.exe\" -ArgumentList \"`\"C:\\\\Users\\\\Salón 19\\\\Desktop\\\\Organizador de Descargas\\\\organizador_descargas.py`\"\" -PassThru -WindowStyle Normal; Start-Sleep 5; $proc.HasExited)",
+      "PowerShell(Get-Process python -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Name python -ErrorAction SilentlyContinue)"
+    ]
+  }
+}

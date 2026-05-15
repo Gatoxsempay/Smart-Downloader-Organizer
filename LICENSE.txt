@@ -1,0 +1,17 @@
+ACUERDO DE LICENCIA - ORGANIZADOR INTELIGENTE DE DESCARGAS
+=========================================================
+
+Copyright (c) 2026 Fernando Alonso Maldonado Rivero.
+Todos los derechos reservados.
+
+TÉRMINOS Y CONDICIONES:
+
+1. ATRIBUCIÓN: El usuario debe dar crédito apropiado a Fernando Alonso Maldonado Rivero como el creador original del software.
+2. NO COMERCIAL: Este software es gratuito para uso personal. Queda prohibida su venta o uso con fines de lucro.
+3. SIN OBRAS DERIVADAS: No se permite la distribución de versiones modificadas de este software.
+4. PROPIEDAD: Bajo ninguna circunstancia el usuario podrá proclamar la autoría del software como propia.
+
+Este software se proporciona "tal cual", sin garantías de ningún tipo.
+
+Para más información sobre la licencia CC BY-NC-ND 4.0, visite:
+https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es
