@@ -1,4 +1,5 @@
 import queue
+import threading
 import webbrowser
 from pathlib import Path
 
@@ -8,6 +9,12 @@ try:
     _PIL_OK = True
 except ImportError:
     _PIL_OK = False
+
+try:
+    import pystray
+    _PYSTRAY_OK = True
+except ImportError:
+    _PYSTRAY_OK = False
 
 from core.config import Config
 from core.organizer import Organizer
@@ -49,12 +56,15 @@ class MainWindow(ctk.CTk):
         self._nav_btns: dict = {}
         self._current_page: str | None = None
         self._update_banner: ctk.CTkFrame | None = None
+        self._tray = None
+        self._first_hide = True
 
         self._setup_window()
         self._build_sidebar()
         self._build_content()
         self._show_page("dashboard")
         self._poll()
+        self._setup_tray()
 
         if config.get("auto_start_monitoring"):
             self.after(600, self.organizer.start)
@@ -76,9 +86,65 @@ class MainWindow(ctk.CTk):
         self.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _on_close(self):
+        if self._tray:
+            self.withdraw()
+            if self._first_hide:
+                self._first_hide = False
+                try:
+                    self._tray.notify(
+                        "El organizador sigue corriendo en la bandeja del sistema.",
+                        "Organizador de Descargas",
+                    )
+                except Exception:
+                    pass
+        else:
+            if self.organizer.is_running:
+                self.organizer.stop()
+            self.destroy()
+
+    # ── system tray ───────────────────────────────────────────────────────────
+
+    def _setup_tray(self):
+        if not _PYSTRAY_OK or not _PIL_OK:
+            return
+        try:
+            logo = _APP_DIR / "Logotipotransparente.png"
+            img = Image.open(logo).convert("RGBA") if logo.exists() else Image.new("RGBA", (64, 64), (30, 130, 200, 255))
+            menu = pystray.Menu(
+                pystray.MenuItem("Abrir", self._tray_show, default=True),
+                pystray.Menu.SEPARATOR,
+                pystray.MenuItem(
+                    lambda item: "Pausar" if self.organizer.is_running else "Reanudar",
+                    self._tray_toggle,
+                ),
+                pystray.Menu.SEPARATOR,
+                pystray.MenuItem("Salir", self._tray_quit),
+            )
+            self._tray = pystray.Icon("OrganizadorDescargas", img, "Organizador de Descargas", menu)
+            threading.Thread(target=self._tray.run, daemon=True).start()
+        except Exception:
+            self._tray = None
+
+    def _tray_show(self, icon=None, item=None):
+        self.after(0, self._restore_window)
+
+    def _restore_window(self):
+        self.deiconify()
+        self.lift()
+        self.focus_force()
+
+    def _tray_toggle(self, icon=None, item=None):
+        if self.organizer.is_running:
+            self.after(0, self.organizer.stop)
+        else:
+            self.after(0, self.organizer.start)
+
+    def _tray_quit(self, icon=None, item=None):
         if self.organizer.is_running:
             self.organizer.stop()
-        self.destroy()
+        if self._tray:
+            self._tray.stop()
+        self.after(0, self.destroy)
 
     # ── sidebar ───────────────────────────────────────────────────────────────
 

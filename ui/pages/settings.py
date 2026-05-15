@@ -2,6 +2,8 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import subprocess
 
+from core.autostart import get_autostart, set_autostart
+
 
 class SettingsPage(ctk.CTkFrame):
     def __init__(self, parent, window):
@@ -89,7 +91,19 @@ class SettingsPage(ctk.CTkFrame):
         card = self._card(parent, "Comportamiento", row)
         self._switch_row(card, "Iniciar monitoreo automáticamente al abrir", "auto_start_monitoring", 2)
         self._switch_row(card, "Organizar archivos existentes al iniciar", "organize_on_start", 3)
-        ctk.CTkFrame(card, height=10, fg_color="transparent").grid(row=4)
+        self._autostart_row(card, 4)
+        ctk.CTkFrame(card, height=10, fg_color="transparent").grid(row=5)
+
+    def _autostart_row(self, parent, grid_row: int):
+        r = ctk.CTkFrame(parent, fg_color="transparent")
+        r.grid(row=grid_row, column=0, padx=22, pady=8, sticky="ew")
+        r.grid_columnconfigure(0, weight=1)
+        ctk.CTkLabel(r, text="Iniciar con Windows", font=ctk.CTkFont(size=13)).grid(row=0, column=0, sticky="w")
+        sw = ctk.CTkSwitch(r, text="")
+        sw.grid(row=0, column=1)
+        if get_autostart():
+            sw.select()
+        sw.configure(command=lambda s=sw: set_autostart(bool(s.get())))
 
     def _appearance_section(self, parent, row: int):
         card = self._card(parent, "Apariencia", row)
