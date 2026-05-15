@@ -1,8 +1,11 @@
+import shutil
+from pathlib import Path
+
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
-import subprocess
 
 from core.autostart import get_autostart, set_autostart
+from core.config import CONFIG_DIR
 
 
 class SettingsPage(ctk.CTkFrame):
@@ -28,8 +31,7 @@ class SettingsPage(ctk.CTkFrame):
         self._folder_section(scroll, row=0)
         self._behavior_section(scroll, row=1)
         self._appearance_section(scroll, row=2)
-        self._updates_section(scroll, row=3)
-        self._danger_section(scroll, row=4)
+        self._danger_section(scroll, row=3)
 
     # ── helpers ───────────────────────────────────────────────────────────────
 
@@ -120,50 +122,19 @@ class SettingsPage(ctk.CTkFrame):
         combo.set(self.config.get("theme", "dark"))
         combo.grid(row=0, column=1)
 
-    def _updates_section(self, parent, row: int):
-        card = self._card(parent, "Actualizaciones automáticas", row)
-
-        ctk.CTkLabel(
-            card,
-            text="Introduce la URL de tu repositorio de GitHub Releases para que los usuarios\n"
-                 "reciban notificaciones cuando publiques una nueva versión.",
-            font=ctk.CTkFont(size=12),
-            text_color=("gray45", "gray55"),
-            justify="left",
-        ).grid(row=2, column=0, padx=22, pady=(0, 10), sticky="w")
-
-        inner = ctk.CTkFrame(card, fg_color="transparent")
-        inner.grid(row=3, column=0, padx=22, pady=(0, 20), sticky="ew")
-        inner.grid_columnconfigure(0, weight=1)
-
-        url_entry = ctk.CTkEntry(
-            inner,
-            placeholder_text="https://api.github.com/repos/tu-usuario/tu-repo/releases/latest",
-            height=36,
-        )
-        url_entry.grid(row=0, column=0, sticky="ew", padx=(0, 10))
-        url_entry.insert(0, self.config.get("update_check_url", ""))
-
-        def save_url():
-            self.config.set("update_check_url", url_entry.get().strip())
-            self.window._check_updates()
-            messagebox.showinfo("Guardado", "URL de actualizaciones guardada.", parent=self)
-
-        ctk.CTkButton(inner, text="Guardar", width=90, height=36, command=save_url).grid(row=0, column=1)
-
-    def _danger_section(self, parent, row: int):
+def _danger_section(self, parent, row: int):
         card = self._card(parent, "Zona de riesgo", row)
 
         inner = ctk.CTkFrame(card, fg_color="transparent")
         inner.grid(row=2, column=0, padx=22, pady=(0, 20), sticky="ew")
         inner.grid_columnconfigure(0, weight=1)
 
+        # Reset stats
         ctk.CTkLabel(
             inner,
             text="Reinicia el contador de estadísticas a cero.",
             font=ctk.CTkFont(size=12), text_color=("gray45", "gray55"),
         ).grid(row=0, column=0, sticky="w")
-
         ctk.CTkButton(
             inner, text="Restablecer estadísticas",
             width=190, height=36,
@@ -172,7 +143,100 @@ class SettingsPage(ctk.CTkFrame):
             command=self._reset_stats,
         ).grid(row=1, column=0, pady=(10, 0), sticky="w")
 
+        # Separator
+        ctk.CTkFrame(inner, height=1, fg_color=("gray80", "gray25")).grid(
+            row=2, column=0, pady=(20, 16), sticky="ew"
+        )
+
+        # Reverse organization
+        ctk.CTkLabel(
+            inner,
+            text="Devuelve todos los archivos organizados a la carpeta Descargas\n"
+                 "y elimina las subcarpetas vacías.",
+            font=ctk.CTkFont(size=12), text_color=("gray45", "gray55"),
+            justify="left",
+        ).grid(row=3, column=0, sticky="w")
+        ctk.CTkButton(
+            inner, text="Desorganizar archivos",
+            width=190, height=36,
+            fg_color=("#c0392b", "#7b241c"),
+            hover_color=("#922b21", "#5c1b15"),
+            command=self._reverse_organize,
+        ).grid(row=4, column=0, pady=(10, 0), sticky="w")
+
+        # Separator
+        ctk.CTkFrame(inner, height=1, fg_color=("gray80", "gray25")).grid(
+            row=5, column=0, pady=(20, 16), sticky="ew"
+        )
+
+        # Uninstall
+        ctk.CTkLabel(
+            inner,
+            text="Elimina la configuración, los registros y el inicio automático con Windows.\n"
+                 "Después podrás borrar el archivo .exe manualmente.",
+            font=ctk.CTkFont(size=12), text_color=("gray45", "gray55"),
+            justify="left",
+        ).grid(row=6, column=0, sticky="w")
+        ctk.CTkButton(
+            inner, text="Desinstalar software",
+            width=190, height=36,
+            fg_color=("#7b241c", "#4a1010"),
+            hover_color=("#5c1b15", "#350b0b"),
+            command=self._uninstall,
+        ).grid(row=7, column=0, pady=(10, 20), sticky="w")
+
     def _reset_stats(self):
         if messagebox.askyesno("Confirmar", "¿Deseas restablecer todas las estadísticas a cero?"):
             self.config.set("stats", {"total_moved": 0, "by_category": {}})
             messagebox.showinfo("Listo", "Estadísticas restablecidas correctamente.")
+
+    def _reverse_organize(self):
+        org = self.window.organizer
+        if not messagebox.askyesno(
+            "Desorganizar archivos",
+            "Se moverán todos los archivos de las subcarpetas de vuelta a Descargas "
+            "y se eliminarán las carpetas vacías.\n\n¿Continuar?",
+            parent=self,
+        ):
+            return
+        was_running = org.is_running
+        if was_running:
+            org.stop()
+        org.reverse()
+        if was_running:
+            org.start()
+        messagebox.showinfo(
+            "Listo",
+            "Restauración iniciada. Puedes ver el progreso en la pestaña Registros.",
+            parent=self,
+        )
+
+    def _uninstall(self):
+        if not messagebox.askyesno(
+            "Desinstalar",
+            "Se eliminarán:\n"
+            "  • Configuración y registros de la aplicación\n"
+            "  • Entrada de inicio automático con Windows\n\n"
+            "El archivo .exe deberás borrarlo tú manualmente.\n\n"
+            "¿Continuar con la desinstalación?",
+            parent=self,
+            icon="warning",
+        ):
+            return
+        try:
+            set_autostart(False)
+        except Exception:
+            pass
+        try:
+            if CONFIG_DIR.exists():
+                shutil.rmtree(CONFIG_DIR)
+        except Exception as exc:
+            messagebox.showerror("Error", f"No se pudo eliminar la configuración:\n{exc}", parent=self)
+            return
+        messagebox.showinfo(
+            "Desinstalado",
+            "La configuración y el inicio automático han sido eliminados.\n\n"
+            "Puedes borrar el archivo OrganizadorDescargas.exe para completar la desinstalación.",
+            parent=self,
+        )
+        self.window._tray_quit()

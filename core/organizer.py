@@ -68,6 +68,33 @@ class Organizer:
         folder = Path(self.config.get("monitored_folder"))
         threading.Thread(target=self._organize_existing, args=(folder,), daemon=True).start()
 
+    def reverse(self):
+        folder = Path(self.config.get("monitored_folder"))
+        threading.Thread(target=self._reverse_organize, args=(folder,), daemon=True).start()
+
+    def _reverse_organize(self, base: Path):
+        self._log("Iniciando restauración — moviendo archivos de vuelta a Descargas...")
+        moved = 0
+        errors = 0
+        for subfolder in list(base.iterdir()):
+            if not subfolder.is_dir():
+                continue
+            for f in list(subfolder.iterdir()):
+                if f.is_file():
+                    dest = self._no_collision(base, f.name)
+                    try:
+                        shutil.move(str(f), str(dest))
+                        moved += 1
+                    except Exception as exc:
+                        self._log(f"Error al restaurar {f.name}: {exc}", "ERROR")
+                        errors += 1
+            try:
+                if not any(subfolder.iterdir()):
+                    subfolder.rmdir()
+            except Exception:
+                pass
+        self._log(f"Restauración completada — {moved} archivo(s) devuelto(s), {errors} error(es).")
+
     def _organize_existing(self, folder: Path):
         self._log("Organizando archivos existentes...")
         count = 0

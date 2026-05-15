@@ -28,7 +28,7 @@ _DEFAULTS = {
     "auto_start_monitoring": True,
     "organize_on_start": True,
     "theme": "dark",
-    "update_check_url": "",
+    "update_check_url": "https://api.github.com/repos/Gatoxsempay/Smart-Downloader-Organizer/releases/latest",
     "extension_rules": _DEFAULT_RULES,
     "excluded_extensions": [".crdownload", ".tmp", ".part", ".download", ".opdownload"],
     "excluded_names": ["desktop.ini", "thumbs.db", ".ds_store", "organizador.log"],
