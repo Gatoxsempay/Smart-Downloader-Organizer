@@ -38,7 +38,6 @@ SolidCompression=yes
 
 ; Apariencia
 WizardStyle=modern
-WizardResizable=no
 
 ; Requisitos mínimos del sistema
 MinVersion=10.0.17763
@@ -61,8 +60,7 @@ Name: "autostart"; \
   Flags: unchecked
 
 Name: "launchapp"; \
-  Description: "Iniciar {#AppName} al terminar la instalación"; \
-  GroupDescription: ""
+  Description: "Iniciar {#AppName} al terminar la instalación"
 
 [Files]
 Source: "..\publish\win-x64\*"; \
@@ -100,6 +98,7 @@ Filename: "{app}\{#AppExeName}"; \
 ; Cerrar la app antes de desinstalar
 Filename: "{cmd}"; \
   Parameters: "/c taskkill /f /im {#AppExeName}"; \
+  RunOnceId: "KillApp"; \
   Flags: runhidden skipifdoesntexist
 
 [UninstallDelete]
