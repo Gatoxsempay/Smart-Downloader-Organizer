@@ -37,6 +37,12 @@ public class AppConfig
         { ".appx", "Instaladores" }, { ".dmg", "Instaladores" }, { ".deb", "Instaladores" },
         { ".zip", "Comprimidos" }, { ".rar", "Comprimidos" }, { ".7z", "Comprimidos" },
         { ".tar", "Comprimidos" }, { ".gz", "Comprimidos" }, { ".xz", "Comprimidos" },
+        { ".py", "Código" }, { ".js", "Código" }, { ".ts", "Código" },
+        { ".cs", "Código" }, { ".cpp", "Código" }, { ".java", "Código" },
+        { ".go", "Código" }, { ".rs", "Código" }, { ".html", "Código" },
+        { ".css", "Código" }, { ".php", "Código" }, { ".rb", "Código" },
+        { ".psd", "Diseño" }, { ".ai", "Diseño" }, { ".xd", "Diseño" },
+        { ".fig", "Diseño" }, { ".sketch", "Diseño" },
     };
 }
 

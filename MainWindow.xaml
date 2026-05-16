@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Organizador de Descargas"
+    Title="Organizador de PC"
     mc:Ignorable="d">
     <Window.SystemBackdrop>
         <MicaBackdrop />
@@ -20,7 +20,7 @@
 
         <TitleBar
             x:Name="AppTitleBar"
-            Title="Organizador de Descargas"
+            Title="Organizador de PC"
             IsPaneToggleButtonVisible="True"
             PaneToggleRequested="TitleBar_PaneToggleRequested">
             <TitleBar.IconSource>
@@ -63,6 +63,16 @@
                 <NavigationViewItem Content="Panel" Tag="dashboard">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE80F;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Carpetas" Tag="folders">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8B7;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Escritorio" Tag="desktop">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8FC;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="Reglas" Tag="rules">

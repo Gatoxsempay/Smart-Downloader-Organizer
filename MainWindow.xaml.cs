@@ -14,7 +14,7 @@ public sealed partial class MainWindow : Window
     public static ConfigService Config { get; } = new();
     public static OrganizerService Organizer { get; } = new(Config);
 
-    private const string Version = "2.0.0";
+    private const string Version = "3.0.0";
     private string? _updateUrl;
 
     public MainWindow()
@@ -25,7 +25,7 @@ public sealed partial class MainWindow : Window
         SetTitleBar(AppTitleBar);
         AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
         AppWindow.SetIcon("Assets/AppIcon.ico");
-        AppWindow.Title = $"Organizador de Descargas  v{Version}";
+        AppWindow.Title = $"Organizador de PC  v{Version}";
 
         Organizer.StatusChanged += OnStatusChanged;
         Organizer.LogEmitted += OnLogEmitted;
@@ -58,6 +58,8 @@ public sealed partial class MainWindow : Window
         Type? page = item.Tag?.ToString() switch
         {
             "dashboard"  => typeof(DashboardPage),
+            "folders"    => typeof(FolderOrganizerPage),
+            "desktop"    => typeof(DesktopOrganizerPage),
             "rules"      => typeof(RulesPage),
             "exclusions" => typeof(ExclusionsPage),
             "logs"       => typeof(LogsPage),
