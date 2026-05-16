@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="OrganizadorDescargas.Pages.RulesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:primitives="using:CommunityToolkit.WinUI.Controls"
+    Background="Transparent">
+
+    <Grid Margin="30,30,30,30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Reglas por carpeta" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+            <Button Content="+ Nueva carpeta" HorizontalAlignment="Right"
+                    Click="NewFolderBtn_Click" />
+        </Grid>
+
+        <!-- Search + count -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <TextBox x:Name="SearchBox" PlaceholderText="Buscar carpeta o extensión..."
+                         Width="270" TextChanged="SearchBox_TextChanged" />
+                <TextBlock x:Name="CountLabel" VerticalAlignment="Center"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="12" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Folder cards list -->
+        <ScrollViewer Grid.Row="2">
+            <StackPanel x:Name="FolderList" Spacing="10">
+                <TextBlock x:Name="EmptyLabel"
+                           Text="Sin resultados. Agrega una nueva carpeta con el botón superior."
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           FontSize="13" Margin="0,40" HorizontalAlignment="Center"
+                           Visibility="Collapsed" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="OrganizadorDescargas.Pages.ExclusionsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="Transparent">
+
+    <ScrollViewer>
+        <StackPanel Margin="30,30,30,30" Spacing="16">
+            <TextBlock Text="Exclusiones" FontSize="24" FontWeight="Bold" />
+
+            <!-- Excluded extensions -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="14" Padding="22,20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Extensiones excluidas" FontSize="15" FontWeight="SemiBold" />
+                    <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+                    <TextBlock Text="Archivos con estas extensiones nunca serán movidos (ej: descargas en progreso)."
+                               FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ItemsControl x:Name="ExtList" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="ExtBox" PlaceholderText=".crdownload, .tmp" Width="250" />
+                        <Button Content="Agregar" Click="AddExt_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Excluded names -->
+            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="14" Padding="22,20">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Nombres excluidos" FontSize="15" FontWeight="SemiBold" />
+                    <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+                    <TextBlock Text="Archivos con estos nombres exactos nunca serán movidos."
+                               FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    <ItemsControl x:Name="NameList" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBox x:Name="NameBox" PlaceholderText="desktop.ini, thumbs.db" Width="250" />
+                        <Button Content="Agregar" Click="AddName_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
