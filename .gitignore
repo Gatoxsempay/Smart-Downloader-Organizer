@@ -29,6 +29,10 @@ artifacts/
 *.nuget.targets
 project.lock.json
 
+# Publish & installer output
+publish/
+release/
+
 # MSIX packaging output
 AppPackages/
 BundleArtifacts/
