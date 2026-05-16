@@ -14,6 +14,11 @@ public partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         MainWindowInstance = new MainWindow();
+        MainWindowInstance.Closed += (s, e) =>
+        {
+            MainWindow.Organizer.Stop();
+            Application.Current.Exit();
+        };
         MainWindowInstance.Activate();
     }
 }
