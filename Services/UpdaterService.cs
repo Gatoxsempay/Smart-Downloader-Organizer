@@ -24,9 +24,12 @@ public static class UpdaterService
             var json = await Http.GetStringAsync(url);
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
-            var tag = root.GetProperty("tag_name").GetString()?.TrimStart('v') ?? "";
+            var tag     = root.GetProperty("tag_name").GetString()?.TrimStart('v') ?? "";
             var htmlUrl = root.GetProperty("html_url").GetString() ?? "";
-            if (!string.IsNullOrEmpty(tag) && tag != currentVersion)
+            if (!string.IsNullOrEmpty(tag) && !string.IsNullOrEmpty(htmlUrl)
+                && System.Version.TryParse(tag, out var remote)
+                && System.Version.TryParse(currentVersion, out var current)
+                && remote > current)
                 return new UpdateInfo(tag, htmlUrl);
         }
         catch { }

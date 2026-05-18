@@ -13,6 +13,19 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+        UnhandledException += (_, e) =>
+        {
+            e.Handled = true;
+            try
+            {
+                var logDir  = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "OrganizadorDescargas");
+                Directory.CreateDirectory(logDir);
+                File.AppendAllText(
+                    Path.Combine(logDir, "crash.log"),
+                    $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}]\n{e.Exception}\n\n");
+            }
+            catch { }
+        };
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)

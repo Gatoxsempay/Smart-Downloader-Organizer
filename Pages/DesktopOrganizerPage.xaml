@@ -10,81 +10,243 @@
 
             <!-- Header -->
             <Grid>
-                <TextBlock Text="Organizar escritorio" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
-                <Button x:Name="ScanBtn" Content="Escanear escritorio"
-                        HorizontalAlignment="Right"
-                        Background="#2563EB" Foreground="White" FontWeight="SemiBold"
-                        Click="ScanBtn_Click" />
+                <TextBlock Text="Zonas de escritorio" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                    <Button x:Name="StressBtn" Content="Prueba de estrés"
+                            Background="#374151" Foreground="White" FontSize="12"
+                            Click="StressBtn_Click" />
+                    <Button x:Name="DiagBtn" Content="Diagnóstico"
+                            Background="#374151" Foreground="White" FontSize="12"
+                            Click="DiagBtn_Click" />
+                    <ProgressRing x:Name="ScanRing" Width="20" Height="20"
+                                  IsActive="True" Visibility="Collapsed"
+                                  VerticalAlignment="Center" />
+                    <Button x:Name="ScanBtn" Content="Actualizar"
+                            Background="#374151" Foreground="White"
+                            Click="ScanBtn_Click" />
+                </StackPanel>
             </Grid>
 
-            <!-- Info banner -->
+            <!-- Zone map preview -->
             <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     CornerRadius="12" Padding="16">
-                <StackPanel Spacing="6">
-                    <TextBlock Text="¿Cómo funciona?" FontWeight="SemiBold" FontSize="13" />
-                    <TextBlock TextWrapping="Wrap" FontSize="12"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                        Los archivos y accesos directos del escritorio se moverán a subcarpetas organizadas por categoría
-                        (Imágenes, Documentos, Accesos Directos, etc.). Las carpetas existentes no se tocan.
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Distribución de zonas" FontSize="13" FontWeight="SemiBold" />
+
+                    <!-- Outer: left 4/5 (apps/dev/docs + media) | right 1/5 (folders) -->
+                    <Grid ColumnSpacing="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left area: top row (Apps|Dev|Docs) + bottom row (Media) -->
+                        <Grid Grid.Column="0" RowSpacing="6">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="75" />
+                                <RowDefinition Height="75" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Top row: Apps | Dev | Docs -->
+                            <Grid Grid.Row="0" ColumnSpacing="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0"
+                                        Background="#20A855F7" BorderBrush="#50A855F7"
+                                        BorderThickness="1" CornerRadius="8">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <FontIcon Glyph="&#xE71D;" FontSize="18" Foreground="#A855F7"
+                                                  HorizontalAlignment="Center" />
+                                        <TextBlock Text="Apps" FontSize="11" FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center" Foreground="#A855F7" />
+                                        <TextBlock Text=".lnk · .exe" FontSize="9"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Background="#2006B6D4" BorderBrush="#5006B6D4"
+                                        BorderThickness="1" CornerRadius="8">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <FontIcon Glyph="&#xE943;" FontSize="18" Foreground="#06B6D4"
+                                                  HorizontalAlignment="Center" />
+                                        <TextBlock Text="Desarrollo" FontSize="11" FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center" Foreground="#06B6D4" />
+                                        <TextBlock Text="IDEs · Git" FontSize="9"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2"
+                                        Background="#202563EB" BorderBrush="#502563EB"
+                                        BorderThickness="1" CornerRadius="8">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <FontIcon Glyph="&#xE8A5;" FontSize="18" Foreground="#60A5FA"
+                                                  HorizontalAlignment="Center" />
+                                        <TextBlock Text="Documentos" FontSize="11" FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center" Foreground="#60A5FA" />
+                                        <TextBlock Text=".pdf · Word" FontSize="9"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <!-- Bottom: Media (full left-area width) -->
+                            <Border Grid.Row="1"
+                                    Background="#20F59E0B" BorderBrush="#50F59E0B"
+                                    BorderThickness="1" CornerRadius="8">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                    <FontIcon Glyph="&#xE8B9;" FontSize="18" Foreground="#FCD34D"
+                                              HorizontalAlignment="Center" />
+                                    <TextBlock Text="Multimedia" FontSize="11" FontWeight="SemiBold"
+                                               HorizontalAlignment="Center" Foreground="#FCD34D" />
+                                    <TextBlock Text=".jpg · .mp4 · .mp3" FontSize="9"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Right column: Folders — spans full height of both rows -->
+                        <Border Grid.Column="1"
+                                Background="#206B7280" BorderBrush="#506B7280"
+                                BorderThickness="1" CornerRadius="8">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                <FontIcon Glyph="&#xE8B7;" FontSize="18" Foreground="#9CA3AF"
+                                          HorizontalAlignment="Center" />
+                                <TextBlock Text="Carpetas" FontSize="11" FontWeight="SemiBold"
+                                           HorizontalAlignment="Center" Foreground="#9CA3AF"
+                                           TextWrapping="Wrap" TextAlignment="Center" />
+                                <TextBlock Text=".zip · etc." FontSize="9"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           TextWrapping="Wrap" TextAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Auto-arrange warning (hidden by default) -->
+            <Border x:Name="AutoArrangeWarning" Visibility="Collapsed"
+                    Background="#20F59E0B" BorderBrush="#50F59E0B"
+                    BorderThickness="1" CornerRadius="10" Padding="14,10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon Glyph="&#xE7BA;" FontSize="16" Foreground="#F59E0B"
+                              VerticalAlignment="Center" />
+                    <TextBlock TextWrapping="Wrap" FontSize="12" VerticalAlignment="Center">
+                        <Run FontWeight="SemiBold" Foreground="#F59E0B">Auto-organizar activado: </Run>
+                        <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                            haz clic derecho en el escritorio → Ver → desmarca "Organizar iconos automáticamente" antes de aplicar.
+                        </Run>
                     </TextBlock>
                 </StackPanel>
             </Border>
 
-            <!-- Stats bar -->
+            <!-- Stats bar (hidden until scan) -->
             <Border x:Name="StatsBar" Visibility="Collapsed"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     CornerRadius="12" Padding="20,14">
-                <StackPanel Orientation="Horizontal" Spacing="32">
+                <StackPanel Orientation="Horizontal" Spacing="28">
                     <StackPanel Spacing="2">
-                        <TextBlock x:Name="TotalFilesLabel" Text="0" FontSize="26" FontWeight="Bold" Foreground="#2563EB" />
-                        <TextBlock Text="archivos" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="TotalLabel" Text="0"
+                                   FontSize="26" FontWeight="Bold" Foreground="#2563EB" />
+                        <TextBlock Text="iconos" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                     <StackPanel Spacing="2">
-                        <TextBlock x:Name="WillMoveLabel" Text="0" FontSize="26" FontWeight="Bold" Foreground="#10B981" />
-                        <TextBlock Text="se organizarán" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="AppsLabel" Text="0"
+                                   FontSize="26" FontWeight="Bold" Foreground="#A855F7" />
+                        <TextBlock Text="apps" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                     <StackPanel Spacing="2">
-                        <TextBlock x:Name="NoRuleLabel" Text="0" FontSize="26" FontWeight="Bold" Foreground="#F59E0B" />
-                        <TextBlock Text="sin categoría" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="DevLabel" Text="0"
+                                   FontSize="26" FontWeight="Bold" Foreground="#06B6D4" />
+                        <TextBlock Text="dev" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock x:Name="DocsLabel" Text="0"
+                                   FontSize="26" FontWeight="Bold" Foreground="#60A5FA" />
+                        <TextBlock Text="docs" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock x:Name="MediaLabel" Text="0"
+                                   FontSize="26" FontWeight="Bold" Foreground="#FCD34D" />
+                        <TextBlock Text="media" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <StackPanel Spacing="2">
+                        <TextBlock x:Name="OtherLabel" Text="0"
+                                   FontSize="26" FontWeight="Bold" Foreground="#9CA3AF" />
+                        <TextBlock Text="carpetas" FontSize="11"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                 </StackPanel>
             </Border>
 
-            <!-- Preview section -->
-            <Border x:Name="PreviewSection" Visibility="Collapsed"
+            <!-- Icon list (hidden until scan) -->
+            <Border x:Name="ListSection" Visibility="Collapsed"
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     CornerRadius="12" Padding="16">
                 <StackPanel Spacing="10">
-                    <TextBlock Text="Vista previa" FontSize="15" FontWeight="SemiBold" />
-                    <StackPanel x:Name="PreviewPanel" Spacing="8" />
+                    <TextBlock Text="Iconos detectados" FontSize="14" FontWeight="SemiBold" />
+                    <StackPanel x:Name="IconsList" Spacing="4" />
                 </StackPanel>
             </Border>
 
-            <!-- Organize button -->
-            <Button x:Name="OrganizeBtn" Content="Organizar escritorio" Visibility="Collapsed"
-                    Background="#10B981" Foreground="White" FontWeight="SemiBold"
-                    HorizontalAlignment="Stretch" Padding="0,14"
-                    HorizontalContentAlignment="Center"
-                    Click="OrganizeBtn_Click" />
-
-            <!-- Coming soon: Zones -->
-            <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    CornerRadius="12" Padding="16" Opacity="0.6">
-                <StackPanel Spacing="8">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <FontIcon Glyph="&#xE81E;" FontSize="18" Foreground="#8B5CF6" />
-                        <TextBlock Text="Zonas de escritorio  —  Próximamente"
-                                   FontWeight="SemiBold" FontSize="13" Foreground="#8B5CF6"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-                    <TextBlock TextWrapping="Wrap" FontSize="12"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                        Define áreas fijas en tu escritorio para agrupar visualmente tus aplicaciones:
-                        Juegos, Trabajo, Programación, etc. La app posicionará los iconos
-                        automáticamente en cada zona al aplicar el layout.
-                    </TextBlock>
-                </StackPanel>
+            <!-- Mode selector (visible after scan) -->
+            <Border x:Name="ModeBar" Visibility="Collapsed"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    CornerRadius="12" Padding="20,14">
+                <Grid>
+                    <TextBlock Text="Modo de organización" FontSize="13" FontWeight="SemiBold"
+                               VerticalAlignment="Center" />
+                    <ComboBox x:Name="ModeCombo" HorizontalAlignment="Right"
+                              SelectedIndex="0" MinWidth="200">
+                        <ComboBoxItem Content="Por zona (predeterminado)" Tag="ByZone" />
+                        <ComboBoxItem Content="Alfabético (A–Z)" Tag="Alphabetical" />
+                        <ComboBoxItem Content="Por extensión" Tag="ByExtension" />
+                    </ComboBox>
+                </Grid>
             </Border>
+
+            <!-- Action buttons -->
+            <Grid x:Name="ActionBar" Visibility="Collapsed" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="ArrangeBtn" Grid.Column="0"
+                        Content="Organizar en zonas"
+                        Background="#10B981" Foreground="White" FontWeight="SemiBold"
+                        HorizontalAlignment="Stretch" Padding="0,14"
+                        HorizontalContentAlignment="Center"
+                        Click="ArrangeBtn_Click" />
+
+                <Button x:Name="PreviewBtn" Grid.Column="1"
+                        Content="Vista previa"
+                        Background="#6366F1" Foreground="White" FontWeight="SemiBold"
+                        Padding="16,14"
+                        Click="PreviewBtn_Click" />
+
+                <Button x:Name="RestoreBtn" Grid.Column="2"
+                        Content="Restaurar posiciones"
+                        Background="#374151" Foreground="White"
+                        Padding="16,14" Visibility="Collapsed"
+                        Click="RestoreBtn_Click" />
+            </Grid>
 
         </StackPanel>
     </ScrollViewer>

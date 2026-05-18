@@ -75,6 +75,26 @@
                         <FontIcon Glyph="&#xE8FC;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="Explorador" Tag="filemanager">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xEC50;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Macros" Tag="macros">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE943;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Duplicados" Tag="duplicates">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE71B;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Fantasmas" Tag="ghosts">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7BA;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="Reglas" Tag="rules">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE8C8;" />
@@ -99,12 +119,22 @@
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>
             <NavigationView.PaneFooter>
-                <Border Padding="16,4,16,16">
+                <StackPanel Padding="16,4,16,16" Spacing="8">
+                    <Button x:Name="ToolbarToggleBtn"
+                            HorizontalAlignment="Stretch"
+                            Background="#1E3A5F" Foreground="White"
+                            Padding="12,8"
+                            Click="ToolbarToggleBtn_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xEA37;" FontSize="14" VerticalAlignment="Center" />
+                            <TextBlock Text="Barra portátil" FontSize="12" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <Ellipse x:Name="StatusEllipse" Width="8" Height="8" Fill="Gray" VerticalAlignment="Center" />
                         <TextBlock x:Name="StatusText" Text="Detenido" FontSize="12" Foreground="Gray" VerticalAlignment="Center" />
                     </StackPanel>
-                </Border>
+                </StackPanel>
             </NavigationView.PaneFooter>
             <Frame x:Name="NavFrame" />
         </NavigationView>

@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using OrganizadorDescargas.Pages;
 using OrganizadorDescargas.Services;
+using OrganizadorDescargas.Models;
 using System;
 using Windows.UI;
 
@@ -11,11 +12,13 @@ namespace OrganizadorDescargas;
 
 public sealed partial class MainWindow : Window
 {
-    public static ConfigService Config { get; } = new();
-    public static OrganizerService Organizer { get; } = new(Config);
+    public static ConfigService    Config       { get; } = new();
+    public static OrganizerService Organizer    { get; } = new(Config);
+    public static FileUsageTracker UsageTracker { get; } = new();
 
     private const string Version = "3.0.0";
-    private string? _updateUrl;
+    private string?        _updateUrl;
+    private ToolbarWindow? _toolbar;
 
     public MainWindow()
     {
@@ -45,6 +48,23 @@ public sealed partial class MainWindow : Window
         _ = CheckUpdatesAsync();
     }
 
+    // ── portable toolbar ─────────────────────────────────────────────────────
+
+    private void ToolbarToggleBtn_Click(object sender, RoutedEventArgs e)
+    {
+        if (_toolbar == null)
+        {
+            _toolbar = new ToolbarWindow();
+            _toolbar.Closed += (_, _) => _toolbar = null;
+            _toolbar.Activate();
+        }
+        else
+        {
+            _toolbar.AppWindow.Show();
+            _toolbar.Activate();
+        }
+    }
+
     // ── navigation ────────────────────────────────────────────────────────────
 
     private void TitleBar_PaneToggleRequested(TitleBar sender, object args)
@@ -60,14 +80,34 @@ public sealed partial class MainWindow : Window
             "dashboard"  => typeof(DashboardPage),
             "folders"    => typeof(FolderOrganizerPage),
             "desktop"    => typeof(DesktopOrganizerPage),
+            "filemanager"=> typeof(FileManagerPage),
+            "macros"     => typeof(MacrosPage),
+            "duplicates" => typeof(DuplicatesPage),
+            "ghosts"     => typeof(GhostFilesPage),
             "rules"      => typeof(RulesPage),
             "exclusions" => typeof(ExclusionsPage),
             "logs"       => typeof(LogsPage),
             "settings"   => typeof(SettingsPage),
             _ => null
         };
-        if (page != null && NavFrame.CurrentSourcePageType != page)
-            NavFrame.Navigate(page);
+        if (page != null)
+        {
+            try { NavFrame.Navigate(page); }
+            catch (Exception ex)
+            {
+                try
+                {
+                    var logDir = System.IO.Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "OrganizadorDescargas");
+                    System.IO.Directory.CreateDirectory(logDir);
+                    System.IO.File.AppendAllText(
+                        System.IO.Path.Combine(logDir, "crash.log"),
+                        $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Navigate({page.Name}): {ex}\n\n");
+                }
+                catch { }
+            }
+        }
     }
 
     // ── organizer events ──────────────────────────────────────────────────────
